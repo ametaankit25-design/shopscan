@@ -1,0 +1,39 @@
+# ============================================================
+# .gitignore – Business Listings Dashboard
+# ============================================================
+
+# ── Secrets ────────────────────────────────────────────────
+.env
+!.env.example
+
+# ── Python ─────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+venv/
+.venv/
+*.egg-info/
+dist/
+build/
+.mypy_cache/
+.ruff_cache/
+
+# ── Data files (can be large) ──────────────────────────────
+backend/data/raw_listings.json
+backend/data/clean_listings.json
+backend/data/sample_page.html
+
+# ── Node / React ───────────────────────────────────────────
+node_modules/
+frontend/dist/
+frontend/.env
+
+# ── Database dumps (optional – commit if you want history) ─
+# database/dump.sql
+
+# ── OS / Editor ────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp

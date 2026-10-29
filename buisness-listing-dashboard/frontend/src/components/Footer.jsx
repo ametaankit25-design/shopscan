@@ -1,11 +1,13 @@
 // src/components/Footer.jsx
 import {
-  Compass,
+  MapPinned,
   Send,
   MessageCircle,
 } from 'lucide-react';
 import { useState } from 'react';
 import { useToast } from '../context/ToastContext';
+
+const CURRENT_YEAR = new Date().getFullYear();
 
 const FacebookIcon = () => (
   <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
@@ -46,9 +48,9 @@ export default function Footer() {
         <div className="footer-col brand-col">
           <div className="vazhi-logo footer-logo">
             <div className="logo-badge">
-              <Compass size={18} />
+              <MapPinned size={18} />
             </div>
-            <span className="logo-text">Vazhi</span>
+            <span className="logo-text">BizzFind</span>
           </div>
           <p className="footer-bio">
             Discover premier businesses, top-rated destinations, local dining, and exceptional services curated for discerning travelers and locals.
@@ -131,7 +133,7 @@ export default function Footer() {
       <div className="footer-bottom">
         <div className="vazhi-container footer-bottom-content">
           <p className="copyright-text">
-            © {new Date().getFullYear()} Vazhi All Rights Reserved.
+            © {CURRENT_YEAR} BizzFind. All rights reserved.
           </p>
           <div className="payment-badges">
             <span className="pay-tag">Mastercard</span>

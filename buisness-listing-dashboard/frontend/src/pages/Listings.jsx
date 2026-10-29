@@ -1,15 +1,17 @@
 // src/pages/Listings.jsx
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Search,
   MapPin,
   Layers,
   ChevronRight,
   ChevronLeft,
+  ChevronsRight,
+  ChevronsLeft,
   RotateCcw,
   Plus,
 } from 'lucide-react';
-import { fetchListings, deleteListing } from '../api/client';
+import { fetchListings, deleteListing, fetchStatsBySource } from '../api/client';
 import { useToast } from '../context/ToastContext';
 import ListingCard from '../components/ListingCard';
 import ListingDetailModal from '../components/ListingDetailModal';
@@ -42,13 +44,18 @@ function useDebouncedValue(value, delay = 400) {
   return debounced;
 }
 
-export default function Listings({ onAddListingTrigger }) {
-  const [data, setData] = useState({ total: 0, items: [] });
+const EMPTY_RESULT = { total: 0, items: [] };
+
+export default function Listings() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
   const [filterCity, setFilterCity] = useState('');
   const [filterCategory, setFilterCategory] = useState('');
-  const [loading, setLoading] = useState(true);
+  const [filterSource, setFilterSource] = useState('');
+  const [sources, setSources] = useState([]);
+  const [refreshKey, setRefreshKey] = useState(0);
+  // Results are keyed by the request that produced them, so `loading` is derived instead of set in an effect.
+  const [result, setResult] = useState({ key: null, data: EMPTY_RESULT });
 
   // Modals state
   const [selectedDetail, setSelectedDetail] = useState(null);
@@ -58,36 +65,41 @@ export default function Listings({ onAddListingTrigger }) {
 
   const toast = useToast();
   const debouncedSearch = useDebouncedValue(search);
-  const abortRef = useRef(null);
 
-  const load = useCallback(() => {
-    if (abortRef.current) abortRef.current.abort();
-    const ctrl = new AbortController();
-    abortRef.current = ctrl;
-    setLoading(true);
+  const requestKey = [page, debouncedSearch, filterCategory, filterCity, filterSource, refreshKey].join('|');
+  const loading = result.key !== requestKey;
+  const data = result.data;
+  const load = () => setRefreshKey((k) => k + 1);
 
+  useEffect(() => {
+    let cancelled = false;
     fetchListings({
       page,
       page_size: PAGE_SIZE,
       search: debouncedSearch || undefined,
       category: filterCategory || undefined,
       city: filterCity || undefined,
+      source: filterSource || undefined,
     })
-      .then(setData)
-      .catch((e) => {
-        if (e?.code !== 'ERR_CANCELED') toast('Failed to load listings', 'error');
+      .then((res) => {
+        if (!cancelled) setResult({ key: requestKey, data: res });
       })
-      .finally(() => setLoading(false));
-  }, [page, debouncedSearch, filterCategory, filterCity]);
+      .catch(() => {
+        if (cancelled) return;
+        toast('Failed to load listings', 'error');
+        setResult((prev) => ({ key: requestKey, data: prev.data }));
+      });
+    return () => { cancelled = true; };
+  }, [requestKey, page, debouncedSearch, filterCategory, filterCity, filterSource, toast]);
 
   useEffect(() => {
-    load();
-  }, [load]);
+    let cancelled = false;
+    fetchStatsBySource()
+      .then((list) => { if (!cancelled) setSources(list.map((s) => s.label)); })
+      .catch(() => {});
+    return () => { cancelled = true; };
+  }, [refreshKey]);
 
-  // Reset page to 1 on any filter change
-  useEffect(() => {
-    setPage(1);
-  }, [debouncedSearch, filterCategory, filterCity]);
 
   const handleDelete = async () => {
     if (!deleteTarget) return;
@@ -109,6 +121,8 @@ export default function Listings({ onAddListingTrigger }) {
     setSearch('');
     setFilterCity('');
     setFilterCategory('');
+    setFilterSource('');
+    setPage(1);
   };
 
   const totalPages = Math.max(1, Math.ceil(data.total / PAGE_SIZE));
@@ -131,10 +145,10 @@ export default function Listings({ onAddListingTrigger }) {
     return items;
   };
 
-  const hasActiveFilters = Boolean(search || filterCity || filterCategory);
+  const hasActiveFilters = Boolean(search || filterCity || filterCategory || filterSource);
 
   return (
-    <div className="vazhi-listings-page">
+    <div className="vazhi-listings-page page-enter">
       {/* ── 1. Hero Page Title & Breadcrumbs ── */}
       <section className="vazhi-hero">
         <div className="vazhi-container hero-center">
@@ -155,7 +169,7 @@ export default function Listings({ onAddListingTrigger }) {
                   type="text"
                   placeholder="Seeking Places..."
                   value={search}
-                  onChange={(e) => setSearch(e.target.value)}
+                  onChange={(e) => { setSearch(e.target.value); setPage(1); }}
                   className="segment-input"
                 />
               </div>
@@ -172,7 +186,7 @@ export default function Listings({ onAddListingTrigger }) {
                   list="city-options"
                   placeholder="Search Locations..."
                   value={filterCity}
-                  onChange={(e) => setFilterCity(e.target.value)}
+                  onChange={(e) => { setFilterCity(e.target.value); setPage(1); }}
                   className="segment-input"
                 />
                 <MapPin size={15} className="segment-icon-right" />
@@ -192,7 +206,7 @@ export default function Listings({ onAddListingTrigger }) {
               <div className="segment-input-wrap select-wrap">
                 <select
                   value={filterCategory}
-                  onChange={(e) => setFilterCategory(e.target.value)}
+                  onChange={(e) => { setFilterCategory(e.target.value); setPage(1); }}
                   className="segment-select"
                 >
                   <option value="">Categories</option>
@@ -200,6 +214,26 @@ export default function Listings({ onAddListingTrigger }) {
                     <option key={cat} value={cat}>
                       {cat}
                     </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <div className="segment-divider" />
+
+            {/* Segment 4: Data Source */}
+            <div className="search-field-segment">
+              <label className="segment-label">4. Source</label>
+              <div className="segment-input-wrap select-wrap">
+                <select
+                  value={filterSource}
+                  onChange={(e) => { setFilterSource(e.target.value); setPage(1); }}
+                  className="segment-select"
+                  aria-label="Filter by data source"
+                >
+                  <option value="">All sources</option>
+                  {sources.map((s) => (
+                    <option key={s} value={s}>{s}</option>
                   ))}
                 </select>
               </div>
@@ -278,9 +312,10 @@ export default function Listings({ onAddListingTrigger }) {
           </div>
         ) : (
           <div className="listings-grid">
-            {data.items.map((listing) => (
+            {data.items.map((listing, i) => (
               <ListingCard
                 key={listing.id}
+                index={i}
                 listing={listing}
                 onViewDetails={setSelectedDetail}
                 onEdit={(item) => setModalListing(item)}
@@ -294,10 +329,20 @@ export default function Listings({ onAddListingTrigger }) {
         {totalPages > 1 && (
           <div className="vazhi-pagination">
             <button
+              className="page-nav-btn first"
+              disabled={page <= 1}
+              onClick={() => setPage(1)}
+              aria-label="First page"
+              title="First page"
+            >
+              <ChevronsLeft size={16} />
+            </button>
+            <button
               className="page-nav-btn prev"
               disabled={page <= 1}
               onClick={() => setPage((p) => Math.max(1, p - 1))}
               aria-label="Previous page"
+              title="Previous page"
             >
               <ChevronLeft size={16} />
             </button>
@@ -312,15 +357,24 @@ export default function Listings({ onAddListingTrigger }) {
               </button>
             ))}
 
-            {page < totalPages && (
-              <button
-                className="page-nav-btn next"
-                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                aria-label="Next page"
-              >
-                <ChevronRight size={16} />
-              </button>
-            )}
+            <button
+              className="page-nav-btn next"
+              disabled={page >= totalPages}
+              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+              aria-label="Next page"
+              title="Next page"
+            >
+              <ChevronRight size={16} />
+            </button>
+            <button
+              className="page-nav-btn last"
+              disabled={page >= totalPages}
+              onClick={() => setPage(totalPages)}
+              aria-label="Last page"
+              title={`Last page (${totalPages})`}
+            >
+              <ChevronsRight size={16} />
+            </button>
           </div>
         )}
       </section>

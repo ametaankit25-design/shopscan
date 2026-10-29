@@ -9,6 +9,15 @@ const client = axios.create({
   headers: { 'Content-Type': 'application/json' },
 });
 
+/** Human-readable message for a failed API call (network down vs. HTTP error). */
+export const describeApiError = (err) => {
+  if (!err?.response) {
+    return `Cannot reach the API at ${BASE_URL}. Make sure the FastAPI server is running.`;
+  }
+  const detail = err.response.data?.detail;
+  return typeof detail === 'string' ? detail : `The API returned an error (HTTP ${err.response.status}).`;
+};
+
 // ── Listings ──────────────────────────────────────────────────────────────────
 
 export const fetchListings = (params) =>
@@ -39,5 +48,11 @@ export const fetchStatsByCity = (limit = 10) =>
 
 export const fetchStatsBySource = () =>
   client.get('/stats/source').then((r) => r.data);
+
+export const fetchStatsTimeline = (days = 30) =>
+  client.get('/stats/timeline', { params: { days } }).then((r) => r.data);
+
+export const fetchStatsCityCategory = (cities = 8, categories = 6) =>
+  client.get('/stats/city-category', { params: { cities, categories } }).then((r) => r.data);
 
 export default client;

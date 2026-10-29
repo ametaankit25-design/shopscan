@@ -1,0 +1,5 @@
+# Test / lint tools:  pip install -r requirements-dev.txt
+-r requirements.txt
+pytest==8.3.3
+httpx==0.27.2                 # TestClient for Starlette 0.37 (httpx 0.28 dropped the `app` argument)
+flake8==7.1.1

@@ -28,23 +28,23 @@ export default function ConfirmModal({
               width: 56,
               height: 56,
               borderRadius: '50%',
-              background: '#fef2f2',
+              background: '#f7ecee',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
             }}
           >
-            <AlertTriangle size={28} color="#e64942" />
+            <AlertTriangle size={28} color="#7a1f2b" />
           </div>
           <div>
-            <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#1e2229', marginBottom: '0.5rem' }}>
+            <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#3a1218', marginBottom: '0.5rem' }}>
               {title}
             </h2>
             <p style={{ color: '#64748b', fontSize: '0.9rem', lineHeight: 1.5 }}>{message}</p>
           </div>
         </div>
 
-        <div className="modal-footer" style={{ justifyContent: 'center', gap: '0.75rem', background: '#fafbfc' }}>
+        <div className="modal-footer" style={{ justifyContent: 'center', gap: '0.75rem', background: '#fbf8f1' }}>
           <button className="btn btn-secondary" onClick={handleDismiss} disabled={loading}>
             Cancel
           </button>

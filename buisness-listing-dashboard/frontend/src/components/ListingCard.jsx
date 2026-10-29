@@ -4,6 +4,7 @@ import {
   Heart,
   Star,
   MapPin,
+  Phone,
   Utensils,
   Coffee,
   Building,
@@ -12,6 +13,7 @@ import {
   GraduationCap,
   Sparkles,
   ArrowRight,
+  Database,
 } from 'lucide-react';
 import { getListingRating } from '../utils/categoryImages';
 
@@ -39,7 +41,7 @@ function getCategoryIcon(category) {
   return <Sparkles size={12} />;
 }
 
-export default function ListingCard({ listing, onViewDetails }) {
+export default function ListingCard({ listing, onViewDetails, index = 0 }) {
   const [isFavorite, setIsFavorite] = useState(() => {
     try {
       const saved = localStorage.getItem(`fav_${listing.id}`);
@@ -63,7 +65,11 @@ export default function ListingCard({ listing, onViewDetails }) {
   const rating = getListingRating(listing.id);
 
   return (
-    <div className="vazhi-card vazhi-card-no-img" onClick={() => onViewDetails(listing)}>
+    <div
+      className="vazhi-card vazhi-card-no-img stagger-item"
+      style={{ '--i': Math.min(index, 11) }}
+      onClick={() => onViewDetails(listing)}
+    >
       {/* ── Card Body ── */}
       <div className="card-body">
         {/* Category & Top Controls */}
@@ -75,7 +81,7 @@ export default function ListingCard({ listing, onViewDetails }) {
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <div className="rating-pill">
-              <Star size={13} className="star-icon" fill="#f59e0b" color="#f59e0b" />
+              <Star size={13} className="star-icon" fill="#c9a227" color="#c9a227" />
               <span className="rating-text">{rating}</span>
             </div>
 
@@ -87,8 +93,8 @@ export default function ListingCard({ listing, onViewDetails }) {
             >
               <Heart
                 size={15}
-                fill={isFavorite ? '#e64942' : 'none'}
-                color={isFavorite ? '#e64942' : '#94a3b8'}
+                fill={isFavorite ? '#7a1f2b' : 'none'}
+                color={isFavorite ? '#7a1f2b' : '#94a3b8'}
               />
             </button>
           </div>
@@ -112,11 +118,31 @@ export default function ListingCard({ listing, onViewDetails }) {
               {listing.address || `${listing.city}, India`}
             </span>
           </div>
+          {listing.phone && (
+            <div className="card-detail-item">
+              <Phone size={14} className="detail-icon" />
+              <a
+                className="detail-text card-phone-link"
+                href={`tel:${listing.phone.replace(/[^+\d]/g, '')}`}
+                onClick={(e) => e.stopPropagation()}
+                title="Call this business"
+              >
+                {listing.phone}
+              </a>
+            </div>
+          )}
         </div>
 
         {/* ── Card Footer ── */}
         <div className="card-footer card-footer-clean">
-          <span className="card-city-tag">{listing.city}</span>
+          <div className="card-tags">
+            <span className="card-city-tag">{listing.city}</span>
+            {listing.source && (
+              <span className="card-source-tag" title={`Data source: ${listing.source}`}>
+                <Database size={11} /> {listing.source}
+              </span>
+            )}
+          </div>
           <button
             className="view-details-link"
             onClick={(e) => {

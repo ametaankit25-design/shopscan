@@ -1,5 +1,5 @@
 // src/components/ListingModal.jsx
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { X } from 'lucide-react';
 import { createListing, updateListing } from '../api/client';
 import { useToast } from '../context/ToastContext';
@@ -22,24 +22,17 @@ const CATEGORIES = [
 ];
 
 export default function ListingModal({ listing, onClose, onSaved }) {
-  const [form, setForm] = useState(EMPTY);
+  // The modal is mounted fresh each time it opens, so initial state can come straight from props.
+  const [form, setForm] = useState(() => (listing ? {
+    business_name: listing.business_name ?? '',
+    category: listing.category ?? '',
+    city: listing.city ?? '',
+    address: listing.address ?? '',
+    phone: listing.phone ?? '',
+    source: listing.source ?? 'manual_entry',
+  } : EMPTY));
   const [saving, setSaving] = useState(false);
   const toast = useToast();
-
-  useEffect(() => {
-    if (listing) {
-      setForm({
-        business_name: listing.business_name ?? '',
-        category: listing.category ?? '',
-        city: listing.city ?? '',
-        address: listing.address ?? '',
-        phone: listing.phone ?? '',
-        source: listing.source ?? 'manual_entry',
-      });
-    } else {
-      setForm(EMPTY);
-    }
-  }, [listing]);
 
   const handle = (e) => setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
 

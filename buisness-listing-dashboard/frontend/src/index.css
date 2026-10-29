@@ -5,20 +5,20 @@
 
 /* ── CSS Tokens ────────────────────────────────────────────── */
 :root {
-  --primary: #e64942;
-  --primary-hover: #d33c35;
-  --primary-light: #fff2f1;
-  --primary-glow: rgba(230, 73, 66, 0.15);
+  --primary: #7a1f2b;
+  --primary-hover: #5e1620;
+  --primary-light: #f7ecee;
+  --primary-glow: rgba(122, 31, 43, 0.15);
 
-  --bg-page: #f8f9fb;
+  --bg-page: #faf6ee;
   --bg-card: #ffffff;
-  --bg-hero: linear-gradient(180deg, #fdf5ef 0%, #faede2 100%);
-  --bg-dark: #16181f;
-  --bg-darker: #0f1015;
+  --bg-hero: linear-gradient(180deg, #fbf5e8 0%, #f3e9d2 100%);
+  --bg-dark: #2b0d12;
+  --bg-darker: #1e080c;
 
   --border-light: #eaedf2;
   --border-subtle: #f0f2f5;
-  --border-dark: #2a2d37;
+  --border-dark: #4a1d24;
 
   --text-dark: #191c24;
   --text-body: #4b5262;
@@ -102,7 +102,7 @@ input, select, textarea {
 
 /* ── Top Utility Bar ────────────────────────────────────────── */
 .vazhi-topbar {
-  background-color: #171920;
+  background-color: #2b0d12;
   color: #9aa1b0;
   font-size: 0.78rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
@@ -213,7 +213,7 @@ input, select, textarea {
   color: var(--primary);
 }
 
-.nav-item.active::after {
+.nav-item::after {
   content: '';
   position: absolute;
   bottom: -20px;
@@ -221,6 +221,14 @@ input, select, textarea {
   right: 0;
   height: 2px;
   background-color: var(--primary);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.nav-item:hover::after,
+.nav-item.active::after {
+  transform: scaleX(1);
 }
 
 /* Action buttons */
@@ -279,6 +287,47 @@ input, select, textarea {
   background: #ffffff;
   border-top: 1px solid var(--border-light);
   gap: 12px;
+  transform-origin: top;
+  animation: menu-slide-down 0.26s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ── Motion ─────────────────────────────────────────────────── */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes menu-slide-down {
+  from { opacity: 0; transform: scaleY(0.85); }
+  to   { opacity: 1; transform: scaleY(1); }
+}
+
+@keyframes shimmer {
+  from { background-position: 200% 0; }
+  to   { background-position: -200% 0; }
+}
+
+/* fill-mode `backwards` (not `both`): once the animation ends no transform stays on the
+   element, so position: fixed modals inside it are still positioned to the viewport. */
+.page-enter {
+  animation: fade-up 0.45s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+
+.stagger-item {
+  animation: fade-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  animation-delay: calc(var(--i, 0) * 60ms);
+}
+
+.skeleton {
+  background: linear-gradient(90deg, #f1ebdd 25%, #f8f4ea 50%, #f1ebdd 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.3s linear infinite;
+  border-radius: 8px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-enter, .stagger-item, .mobile-menu { animation: none; }
+  .nav-item::after { transition: none; }
 }
 
 .mobile-nav-item {
@@ -531,8 +580,8 @@ input, select, textarea {
 }
 
 .card-inline-heart-btn.favorited {
-  border-color: #fee2e2;
-  background: #fef2f2;
+  border-color: #f3dfe2;
+  background: #f7ecee;
 }
 
 /* Card Media */
@@ -541,7 +590,7 @@ input, select, textarea {
   width: 100%;
   aspect-ratio: 16 / 11;
   overflow: hidden;
-  background-color: #f1f3f6;
+  background-color: #f3eee2;
 }
 
 .card-img {
@@ -643,7 +692,7 @@ input, select, textarea {
 .rating-text {
   font-size: 0.76rem;
   font-weight: 600;
-  color: #d97706;
+  color: #9a7b1c;
 }
 
 .card-title {
@@ -707,11 +756,51 @@ input, select, textarea {
   justify-content: space-between;
 }
 
+.detail-phone-link {
+  display: block;
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.detail-phone-link:hover {
+  text-decoration: underline;
+}
+
+.card-phone-link {
+  color: var(--text-body);
+  font-weight: 500;
+}
+
+.card-phone-link:hover {
+  color: var(--primary);
+}
+
+.card-tags {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+.card-source-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #2f6b4f;
+  background: #edf5ef;
+  padding: 3px 9px;
+  border-radius: var(--radius-pill);
+  white-space: nowrap;
+}
+
 .card-city-tag {
   font-size: 0.78rem;
   font-weight: 600;
   color: var(--text-muted);
-  background: #f1f3f7;
+  background: #f3eee2;
   padding: 3px 10px;
   border-radius: var(--radius-pill);
 }
@@ -1090,7 +1179,7 @@ input, select, textarea {
 }
 
 .btn-close-modal:hover {
-  background: #f1f3f6;
+  background: #f3eee2;
   color: var(--text-dark);
 }
 
@@ -1160,16 +1249,16 @@ input, select, textarea {
 }
 
 .btn-secondary:hover {
-  background: #f9fafb;
+  background: #fbf8f1;
 }
 
 .btn-danger {
-  background: #dc2626;
+  background: #8b1e2d;
   color: #ffffff;
 }
 
 .btn-danger:hover {
-  background: #b91c1c;
+  background: #6e1522;
 }
 
 /* ── Detail Modal Specifics ─────────────────────────────────── */
@@ -1203,7 +1292,7 @@ input, select, textarea {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #1e2229;
+  color: #3a1218;
   box-shadow: 0 2px 8px rgba(0,0,0,0.15);
   z-index: 30;
   cursor: pointer;
@@ -1235,7 +1324,7 @@ input, select, textarea {
 
 .detail-badge-rating {
   background: #ffffff;
-  color: #d97706;
+  color: #9a7b1c;
   font-size: 0.76rem;
   font-weight: 700;
   padding: 4px 10px;
@@ -1292,7 +1381,7 @@ input, select, textarea {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 18px;
-  background: #f9fafb;
+  background: #fbf8f1;
   border: 1px solid var(--border-light);
   border-radius: 12px;
   padding: 18px;
@@ -1378,12 +1467,13 @@ input, select, textarea {
 
 /* ── Dashboard & Analytics in Vazhi Style ────────────────────── */
 .vazhi-dashboard-page {
-  padding: 40px 0 70px;
+  padding: 40px 20px 70px;
 }
 
 .dashboard-hero-title {
   font-family: var(--font-serif);
   font-size: 2.2rem;
+  overflow-wrap: anywhere;
   color: var(--text-dark);
   margin-bottom: 8px;
 }
@@ -1410,6 +1500,7 @@ input, select, textarea {
   display: flex;
   align-items: center;
   gap: 16px;
+  min-width: 0;
   transition: var(--transition);
 }
 
@@ -1457,6 +1548,91 @@ input, select, textarea {
   border-radius: 12px;
   padding: 24px;
   box-shadow: var(--shadow-card);
+  min-width: 0;
+}
+
+/* Analytics breakdown table */
+.analytics-table-wrap {
+  overflow-x: auto;
+}
+
+.analytics-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.84rem;
+  min-width: 560px;
+}
+
+.analytics-table th,
+.analytics-table td {
+  padding: 10px 12px;
+  text-align: right;
+  border-bottom: 1px solid var(--border-subtle);
+  white-space: nowrap;
+}
+
+.analytics-table th {
+  color: var(--text-muted);
+  font-weight: 600;
+  font-size: 0.76rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.analytics-table th:first-child,
+.analytics-table td:first-child {
+  text-align: left;
+}
+
+.analytics-table tbody tr {
+  transition: background 0.18s ease;
+}
+
+.analytics-table tbody tr:hover {
+  background: #fbf8f1;
+}
+
+.analytics-table-city {
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.analytics-table-top {
+  color: var(--primary);
+  font-weight: 700;
+  background: var(--primary-light);
+}
+
+/* Error / empty state panel (Dashboard & Analytics) */
+.state-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 70px 20px;
+  text-align: center;
+}
+
+.state-panel-icon {
+  color: var(--primary);
+}
+
+.state-panel-title {
+  font-family: var(--font-serif);
+  font-size: 1.5rem;
+  color: var(--text-dark);
+}
+
+.state-panel-message {
+  color: var(--text-muted);
+  max-width: 520px;
+  overflow-wrap: anywhere;
+}
+
+.state-panel-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .chart-header-row {
@@ -1535,6 +1711,21 @@ input, select, textarea {
   }
   .hero-page-title {
     font-size: 2.4rem;
+  }
+  .dashboard-hero-title {
+    font-size: 1.6rem;
+  }
+  .chart-card-vazhi {
+    padding: 16px 12px;
+  }
+  .logo-text {
+    font-size: 1.35rem;
+  }
+  .vazhi-actions .btn-add-listing {
+    padding: 10px 12px;
+  }
+  .vazhi-actions .btn-add-listing span {
+    display: none;
   }
   .detail-info-grid {
     grid-template-columns: 1fr;

@@ -2,6 +2,7 @@
 import {
   X,
   MapPin,
+  Phone,
   ExternalLink,
   Pencil,
   Trash2,
@@ -27,7 +28,7 @@ export default function ListingDetailModal({ listing, onClose, onEdit, onDelete 
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <span className="detail-badge-cat">{listing.category || 'General'}</span>
             <span className="detail-badge-rating">
-              <Star size={13} fill="#f59e0b" color="#f59e0b" /> {rating}
+              <Star size={13} fill="#c9a227" color="#c9a227" /> {rating}
             </span>
           </div>
           <button className="btn-close-modal" onClick={onClose} aria-label="Close">
@@ -60,6 +61,24 @@ export default function ListingDetailModal({ listing, onClose, onEdit, onDelete 
                 >
                   View on Google Maps <ExternalLink size={12} />
                 </a>
+              </div>
+            </div>
+
+            <div className="detail-info-item">
+              <Phone size={16} className="detail-info-icon" />
+              <div>
+                <div className="detail-info-label">Phone</div>
+                {listing.phone ? (
+                  <a
+                    href={`tel:${listing.phone.replace(/[^+\d]/g, '')}`}
+                    className="detail-info-value detail-phone-link"
+                    title="Call this business"
+                  >
+                    {listing.phone}
+                  </a>
+                ) : (
+                  <div className="detail-info-value">Not provided</div>
+                )}
               </div>
             </div>
 

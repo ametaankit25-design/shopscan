@@ -21,8 +21,8 @@ from urllib.parse import quote_plus
 # ── Make sure we can import from backend/app ───────────────────────────────
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from dotenv import load_dotenv
-from sqlalchemy import create_engine, inspect, text
+from dotenv import load_dotenv  # noqa: E402
+from sqlalchemy import create_engine, inspect, text  # noqa: E402
 
 # Load backend/.env (two levels up from this file)
 _env_path = Path(__file__).resolve().parents[1] / ".env"
@@ -41,8 +41,8 @@ def build_url() -> str:
 
 def main() -> None:
     url = build_url()
-    print(f"\n[check_db] Connecting to: mysql+pymysql://***@{os.environ.get('DB_HOST','localhost')}:"
-          f"{os.environ.get('DB_PORT','3306')}/{os.environ['DB_NAME']}")
+    print(f"\n[check_db] Connecting to: mysql+pymysql://***@{os.environ.get('DB_HOST', 'localhost')}:"
+          f"{os.environ.get('DB_PORT', '3306')}/{os.environ['DB_NAME']}")
 
     try:
         engine = create_engine(url, pool_pre_ping=True)

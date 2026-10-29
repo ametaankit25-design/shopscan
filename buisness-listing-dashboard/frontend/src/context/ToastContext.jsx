@@ -44,4 +44,5 @@ export function ToastProvider({ children }) {
   );
 }
 
+// oxlint-disable-next-line react/only-export-components -- hook is intentionally co-located with its provider
 export const useToast = () => useContext(ToastContext);

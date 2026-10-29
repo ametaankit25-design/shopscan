@@ -1,7 +1,7 @@
 // src/components/Header.jsx
 import { useState } from 'react';
 import { NavLink, Link, useLocation } from 'react-router-dom';
-import { Plus, Menu, X, Sparkles } from 'lucide-react';
+import { Plus, Menu, X, MapPinned } from 'lucide-react';
 
 export default function Header({ onOpenAddListing }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -14,12 +14,12 @@ export default function Header({ onOpenAddListing }) {
       {/* ── Main Navigation ────────────────────────────────────────── */}
       <div className="vazhi-navbar">
         <div className="vazhi-container vazhi-navbar-content">
-          {/* Logo: Shop Skin */}
+          {/* Logo: BizzFind */}
           <Link to="/listings" className="vazhi-logo">
             <div className="logo-badge">
-              <Sparkles size={18} />
+              <MapPinned size={18} />
             </div>
-            <span className="logo-text">Shop Skin</span>
+            <span className="logo-text">BizzFind</span>
           </Link>
 
           {/* Desktop Nav Links */}

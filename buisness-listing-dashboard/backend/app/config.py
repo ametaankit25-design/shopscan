@@ -9,13 +9,16 @@ from __future__ import annotations
 from functools import lru_cache
 from urllib.parse import quote_plus
 
+from pathlib import Path
 from pydantic import computed_field
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+ENV_FILE = Path(__file__).resolve().parent.parent / ".env"
 
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
-        env_file=".env",
+        env_file=ENV_FILE if ENV_FILE.exists() else ".env",
         env_file_encoding="utf-8",
         extra="ignore",
     )
@@ -26,7 +29,7 @@ class Settings(BaseSettings):
     DB_PORT: int = 3306
     DB_NAME: str = "listings_db"
 
-    CORS_ORIGINS: str = "http://localhost:5173"
+    CORS_ORIGINS: str = "http://localhost:5173,http://127.0.0.1:5173"
 
     @computed_field  # type: ignore[misc]
     @property

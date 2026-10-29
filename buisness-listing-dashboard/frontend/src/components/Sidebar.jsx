@@ -21,7 +21,7 @@ export default function Sidebar() {
           <Building2 size={20} color="white" />
         </div>
         <div>
-          <div className="sidebar-logo-text">BizList</div>
+          <div className="sidebar-logo-text">BizzFind</div>
           <div className="sidebar-logo-sub">Dashboard</div>
         </div>
       </div>

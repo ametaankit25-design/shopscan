@@ -80,14 +80,24 @@ async def startup_event():
     from datetime import datetime
     from app.models import Base
     
+    # Log database configuration
+    logger.info(f"🔌 Database Configuration:")
+    logger.info(f"  - DB_HOST: {settings.DB_HOST}")
+    logger.info(f"  - DB_PORT: {settings.DB_PORT}")
+    logger.info(f"  - DB_NAME: {settings.DB_NAME}")
+    logger.info(f"  - DB_USER: {settings.DB_USER}")
+    logger.info(f"  - Using DATABASE_URL: {bool(settings.DATABASE_URL)}")
+    
     # Create tables if they don't exist
     Base.metadata.create_all(bind=engine)
     
     # Check if database is empty
     with engine.connect() as conn:
         result = conn.execute(text("SELECT COUNT(*) FROM listing_master")).scalar()
+        logger.info(f"📊 Found {result} existing listings in database")
+        
         if result == 0:
-            logger.info("Database is empty. Seeding with sample data...")
+            logger.info("⚠️ Database is empty. Seeding with sample data...")
             
             # Sample listings data
             sample_data = [

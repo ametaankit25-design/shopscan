@@ -23,8 +23,14 @@ def get_engine():
     # 1. Try MySQL first
     db_url = settings.final_database_url
     connect_args = {"connect_timeout": 5}
+    
+    # Log connection attempt (without exposing password)
+    safe_url = db_url.split('@')[-1] if '@' in db_url else db_url
+    logger.info(f"🔌 Attempting database connection to: {safe_url}")
+    
     if "tidbcloud" in db_url.lower() or "aivencloud" in db_url.lower() or "ssl" in db_url.lower():
         connect_args["ssl"] = {"check_hostname": False}
+        logger.info("🔒 SSL mode enabled for cloud database")
 
     try:
         mysql_engine = create_engine(
@@ -36,13 +42,14 @@ def get_engine():
         )
         with mysql_engine.connect() as conn:
             conn.execute(text("SELECT 1"))
-        logger.info("Connected to MySQL database successfully.")
+        logger.info("✅ Connected to MySQL database successfully.")
         return mysql_engine
     except Exception as exc:
+        logger.error(f"❌ MySQL connection failed: {exc}")
         sqlite_file = Path(__file__).resolve().parent.parent / "listings.db"
         if sqlite_file.exists():
             logger.warning(
-                "MySQL unreachable (%s). Using local SQLite fallback database at %s",
+                "⚠️ MySQL unreachable (%s). Using local SQLite fallback database at %s",
                 exc,
                 sqlite_file,
             )
@@ -52,6 +59,7 @@ def get_engine():
                 echo=False,
             )
         # If no SQLite file, return mysql_engine to let standard error handlers respond
+        logger.error("❌ No SQLite fallback available. Application may fail.")
         return mysql_engine
 
 

@@ -21,12 +21,17 @@ settings = get_settings()
 
 def get_engine():
     # 1. Try MySQL first
+    db_url = settings.final_database_url
+    connect_args = {"connect_timeout": 5}
+    if "tidbcloud" in db_url.lower() or "aivencloud" in db_url.lower() or "ssl" in db_url.lower():
+        connect_args["ssl"] = {"check_hostname": False}
+
     try:
         mysql_engine = create_engine(
-            settings.DATABASE_URL,
+            db_url,
             pool_pre_ping=True,
             pool_recycle=3600,
-            connect_args={"connect_timeout": 2},
+            connect_args=connect_args,
             echo=False,
         )
         with mysql_engine.connect() as conn:

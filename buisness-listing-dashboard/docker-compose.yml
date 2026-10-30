@@ -31,8 +31,8 @@ services:
     volumes:
       # Named volume keeps data between container restarts
       - mysql_data:/var/lib/mysql
-      # schema.sql is auto-executed on first container start only
-      - ./database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+      # listing_master.sql is auto-executed on first container start only
+      - ./database/listing_master.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
 
     healthcheck:
       test:

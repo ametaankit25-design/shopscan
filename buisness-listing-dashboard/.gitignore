@@ -10,6 +10,7 @@
 __pycache__/
 *.py[cod]
 *.pyo
+*.pyc
 venv/
 .venv/
 *.egg-info/
@@ -17,6 +18,11 @@ dist/
 build/
 .mypy_cache/
 .ruff_cache/
+
+# ── Database files ─────────────────────────────────────────
+*.db
+*.sqlite
+*.sqlite3
 
 # ── Data files (can be large) ──────────────────────────────
 backend/data/raw_listings.json
@@ -26,10 +32,12 @@ backend/data/sample_page.html
 # ── Node / React ───────────────────────────────────────────
 node_modules/
 frontend/dist/
-frontend/.env
-
-# ── Database dumps (optional – commit if you want history) ─
-# database/dump.sql
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
 
 # ── OS / Editor ────────────────────────────────────────────
 .DS_Store
@@ -37,3 +45,7 @@ Thumbs.db
 .idea/
 .vscode/
 *.swp
+*.suo
+*.ntvs*
+*.njsproj
+*.sln

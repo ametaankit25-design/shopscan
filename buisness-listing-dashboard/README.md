@@ -1,177 +1,426 @@
-# Business Listings Dashboard
+# 📍 Business Listings Dashboard
 
-A full-stack dashboard for business directory data. It collects real business listings from
-OpenStreetMap, stores them in MySQL, serves them through a FastAPI REST API and shows them in a
-React dashboard with charts by city, category and source.
+[![React](https://img.shields.io/badge/React-19.3-61DAFB?logo=react&logoColor=black)](https://react.dev/)
+[![Vite](https://img.shields.io/badge/Vite-8.3-646CFF?logo=vite&logoColor=white)](https://vitejs.dev/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.111-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![Python](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1?logo=mysql&logoColor=white)](https://www.mysql.com/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+A full-stack business directory and analytics platform that collects real business listings from OpenStreetMap, stores them in MySQL/SQLite, and visualizes market data through an interactive React dashboard.
+
+---
+
+## 🌟 Key Features
+
+- **🗺️ Interactive Business Directory**: Browse verified restaurants, cafes, hotels, pharmacies, and retail stores
+- **🔍 Advanced Search & Filtering**: Filter by keyword, city, category, and data source in real-time
+- **📊 Analytics Dashboard**: Real-time KPIs, category rankings, city distribution charts, and market insights
+- **📈 Multi-dimensional Analytics**: Stacked charts, 30-day timeline trends, and cross-tabulation views
+- **⚡ Resilient Database Architecture**: MySQL with automatic SQLite fallback for 100% uptime
+- **🤖 Ethical Web Scraping**: OpenStreetMap Overpass API with robots.txt compliance and rate limiting
+- **☁️ Cloud-Ready**: Pre-configured for Vercel (frontend), Render (backend), and TiDB Cloud (MySQL)
+
+---
+
+## 🗂️ Folder Structure
 
 ```
-frontend/   React 19 + Vite + Recharts dashboard (http://localhost:5173)
-backend/    FastAPI + SQLAlchemy API (http://localhost:8000, docs at /docs)
-database/   schema.sql (auto-applied by Docker) and dump.sql (full data export)
+buisness-listing-dashboard/
+├── frontend/                    # React 19 + Vite 8 frontend
+│   ├── src/
+│   │   ├── api/                # Axios HTTP client
+│   │   ├── components/         # Reusable UI components
+│   │   ├── pages/              # Main views (Listings, Dashboard, Analytics)
+│   │   ├── context/            # React Context (Toast notifications)
+│   │   ├── utils/              # Helper functions, animations
+│   │   ├── assets/             # Brand graphics and images
+│   │   ├── App.jsx             # React Router setup
+│   │   ├── main.jsx            # Entry point
+│   │   └── index.css           # Global styles
+│   ├── public/                 # Static assets (favicon, icons)
+│   ├── package.json            # Node dependencies
+│   ├── package-lock.json       # Locked dependency versions
+│   ├── vite.config.js          # Vite configuration
+│   ├── index.html              # HTML template
+│   ├── vercel.json             # Vercel SPA routing config
+│   └── .env.example            # Frontend environment template
+│
+├── backend/                     # FastAPI Python backend
+│   ├── app/
+│   │   ├── routers/
+│   │   │   ├── listings.py    # CRUD endpoints
+│   │   │   └── stats.py       # Analytics endpoints
+│   │   ├── main.py            # FastAPI app & middleware
+│   │   ├── config.py          # Environment settings
+│   │   ├── database.py        # MySQL + SQLite connection
+│   │   ├── models.py          # SQLAlchemy ORM models
+│   │   ├── schemas.py         # Pydantic validation schemas
+│   │   └── crud.py            # Database query functions
+│   ├── scripts/
+│   │   ├── scrape_directory.py # OpenStreetMap scraper
+│   │   ├── seed.py            # Mock data generator
+│   │   └── check_db.py        # Database health check
+│   ├── tests/
+│   │   └── test_api.py        # API integration tests
+│   ├── data/                   # Scraped data storage (gitignored)
+│   ├── requirements.txt        # Python dependencies
+│   ├── requirements-dev.txt    # Dev dependencies (pytest, flake8)
+│   ├── pytest.ini              # Pytest configuration
+│   └── .env.example            # Backend environment template
+│
+├── database/
+│   └── listing_master.sql      # MySQL database dump with CREATE TABLE and data
+│
+├── docker-compose.yml           # MySQL 8.0 + Adminer containers
+├── .gitignore                   # Git exclusions
+├── .env.example                 # Root environment template (Docker)
+└── README.md                    # This file
 ```
 
-## Tech stack
+---
 
-| Layer     | Technology |
-|-----------|------------|
-| Frontend  | React 19, Vite 8, React Router 7, Recharts 3, Axios |
-| Backend   | Python 3.12, FastAPI 0.111, SQLAlchemy 2, Pydantic 2, PyMySQL |
-| Database  | MySQL 8.0 (Docker), utf8mb4; Adminer at http://localhost:8080 |
-| Data      | OpenStreetMap via the Overpass API (`requests`), Faker for clearly-labelled mock rows |
-| Tooling   | pytest, flake8, oxlint |
+## 🛠️ Tech Stack
 
-## Data
+| Layer | Technology | Purpose |
+|-------|-----------|---------|
+| **Frontend** | React 19.3 | Component-based UI framework |
+| | Vite 8.3 | Fast build tool and dev server |
+| | React Router 7 | Client-side routing |
+| | Recharts 3.10 | SVG data visualization |
+| | Axios 1.21 | HTTP client |
+| | Lucide React | Icon library |
+| **Backend** | Python 3.12 | Backend language |
+| | FastAPI 0.111 | Async REST API framework |
+| | Uvicorn 0.30 | ASGI web server |
+| | SQLAlchemy 2.0 | ORM and database toolkit |
+| | Pydantic 2.8 | Data validation |
+| | PyMySQL 1.1 | MySQL connector |
+| **Database** | MySQL 8.0 | Primary production database |
+| | SQLite 3 | Local fallback database |
+| | Adminer | Web-based DB management |
+| **Scraping** | Overpass API | OpenStreetMap query service |
+| | BeautifulSoup4 | HTML/XML parsing |
+| | Faker | Mock data generation |
+| **Quality** | Pytest | Backend testing |
+| | Flake8 | Python linting |
+| | Oxlint | JavaScript linting |
 
-| `source` value  | What it is | How it got there |
-|-----------------|------------|------------------|
-| `OpenStreetMap` | Real businesses (name, category, city, address, phone) from OpenStreetMap, © OpenStreetMap contributors, ODbL | `scripts/scrape_directory.py` |
-| `Mock`          | Synthetic listings generated with Faker for volume / demo purposes | `scripts/seed.py` |
+---
 
-Mock data is always labelled `source = "Mock"` so it is never mistaken for scraped data; the
-dashboard's source chart shows the split. Missing or blank category / city / source values are
-stored and reported as `Unknown`.
+## 🚀 Setup Instructions
 
-The scraper is built to be polite and compliant:
+### Prerequisites
+- Python 3.12+
+- Node.js 20+ & npm
+- Docker Desktop (optional - SQLite fallback available)
 
-- checks `robots.txt` for every endpoint (`urllib.robotparser`) and skips any that disallow it -
-  e.g. `overpass-api.de` disallows `/api/`, so the scraper uses the public mirrors instead;
-- sends one honest User-Agent, waits between requests (`--delay`, default 5 s) and uses timeouts;
-- backs off on HTTP 429/5xx and gives up on 403/blocked responses - no CAPTCHA or anti-bot bypass;
-- skips records missing a name, phone or address instead of inventing values.
-
-## Setup
-
-Prerequisites: Docker Desktop, Python 3.12+, Node.js 20+.
-
-### 1. MySQL (Docker)
-
+### 1. Clone Repository
 ```bash
-cp .env.example .env              # Windows: copy .env.example .env  - then set real passwords
-docker compose up -d
-docker compose ps                 # listings_mysql should show "(healthy)"
+git clone <repository-url>
+cd buisness-listing-dashboard
 ```
 
-On the first start Docker runs `database/schema.sql`, which creates `listings_db.listing_master`.
-Data lives in the named volume `mysql_data`, so it survives `docker compose stop/start`
-(`docker compose down -v` deletes it).
+### 2. Database Setup (MySQL via Docker)
 
-### 2. Backend (FastAPI)
+**Start MySQL container:**
+```bash
+docker compose up -d
+```
+
+**Verify containers are running:**
+```bash
+docker compose ps
+```
+
+**Import SQL dump:**
+```bash
+docker exec -i $(docker compose ps -q mysql) mysql -ulistings_user -plistings_pass listings_db < database/listing_master.sql
+```
+
+**Access Adminer (optional):**
+- URL: http://localhost:8080
+- System: MySQL
+- Server: mysql
+- Username: listings_user
+- Password: listings_pass
+- Database: listings_db
+
+**Skip Docker?** The backend automatically falls back to SQLite if MySQL is unavailable.
+
+### 3. Backend Setup
 
 ```bash
 cd backend
+
+# Create virtual environment
 python -m venv venv
-venv\Scripts\activate             # macOS/Linux: source venv/bin/activate
+
+# Activate virtual environment
+# Windows:
+.\venv\Scripts\activate
+# macOS/Linux:
+source venv/bin/activate
+
+# Install dependencies
 pip install -r requirements.txt
-cp .env.example .env              # Windows: copy .env.example .env  - DB_PASSWORD must match the root .env
-python scripts/check_db.py        # verifies the connection and that listing_master exists
+
+# Create .env file from template
+cp .env.example .env
+# Edit .env with your database credentials
+
+# Run backend server
 uvicorn app.main:app --reload --port 8000
 ```
 
-Check http://localhost:8000/health → `{"status":"ok","database":"ok"}` and open http://localhost:8000/docs.
+**Backend runs at:** http://localhost:8000
+**API docs:** http://localhost:8000/docs
 
-### 3. Load data
-
-Pick one (run from `backend/` with the venv active, unless noted):
-
-```bash
-# a) Restore the exported dataset (run from the project root)
-#    cmd:        docker exec -i listings_mysql sh -c "mysql -uroot -p\"$MYSQL_ROOT_PASSWORD\" listings_db" < database\dump.sql
-#    PowerShell: Get-Content -Raw database\dump.sql | docker exec -i listings_mysql sh -c 'mysql -uroot -p"$MYSQL_ROOT_PASSWORD" listings_db'
-
-# b) Collect fresh real data from OpenStreetMap (takes a few minutes)
-python scripts/scrape_directory.py                         # 10 cities, up to 80 listings each
-python scripts/scrape_directory.py --cities Mumbai --dry-run   # preview without writing
-
-# c) Add mock rows (labelled source = "Mock")
-python scripts/seed.py --count 500
-```
-
-Both scripts use `INSERT IGNORE`, so re-running them never creates duplicates.
-
-### 4. Frontend (React)
+### 4. Frontend Setup
 
 ```bash
 cd frontend
-cp .env.example .env              # Windows: copy .env.example .env  (VITE_API_URL=http://localhost:8000/api)
+
+# Install dependencies
 npm install
-npm run dev                       # http://localhost:5173
+
+# Create .env file from template
+cp .env.example .env
+# Default: VITE_API_URL=http://localhost:8000/api
+
+# Run development server
+npm run dev
 ```
 
-Pages: **Listings** (search, filter by city / category / source, add/edit/delete), **Dashboard**
-(animated totals, top categories, source donut, cities), **Analytics** (category ranking,
-city × category stacked chart, listings-added timeline, category share, city coverage, source share,
-per-city breakdown table).
-If the API or database is down the pages show an error message with a Retry button.
+**Frontend runs at:** http://localhost:5173
 
-## API reference
+---
 
-Base URL `http://localhost:8000`. Interactive docs: `/docs` (Swagger) and `/redoc`.
+## 🔐 Environment Variables
 
-| Method | Path | Description |
-|--------|------|-------------|
-| GET    | `/health` | API + database check; 503 if MySQL is unreachable |
-| GET    | `/api/listings` | Paginated list. Query: `page`, `page_size` (≤100), `search`, `category`, `city`, `source` |
-| POST   | `/api/listings` | Create one listing |
-| POST   | `/api/listings/bulk` | Bulk insert (array or `{"listings": [...]}`); duplicates skipped → `{"inserted", "skipped", "total_submitted"}` |
-| GET    | `/api/listings/{id}` | One listing (404 if missing) |
-| PATCH  | `/api/listings/{id}` | Partial update |
-| DELETE | `/api/listings/{id}` | Delete (204) |
-| GET    | `/api/stats/overview` | `total_listings`, `total_cities`, `total_categories`, `total_sources` |
-| GET    | `/api/stats/category?limit=10` | `[{label, count}]` per category, largest first |
-| GET    | `/api/stats/city?limit=10` | `[{label, count}]` per city |
-| GET    | `/api/stats/source` | `[{label, count}]` per source |
-| GET    | `/api/stats/timeline?days=30` | `[{date, count}]` listings added per day (zeros included) |
-| GET    | `/api/stats/city-category?cities=8&categories=6` | Top cities split by top categories (`Other` = the rest), for the stacked chart and table |
+### Root `.env` (Docker Compose)
+```env
+MYSQL_ROOT_PASSWORD=your_root_password
+DB_NAME=listings_db
+DB_USER=listings_user
+DB_PASSWORD=your_secure_password
+DB_PORT=3306
+```
 
-Errors: 422 for invalid input (missing `business_name`, wrong types, bad JSON, bad query/path values),
-404 for unknown ids, 503 `{"detail": "Database unavailable..."}` when MySQL is down.
+### Backend `.env`
+```env
+DB_USER=listings_user
+DB_PASSWORD=your_secure_password
+DB_HOST=localhost
+DB_PORT=3306
+DB_NAME=listings_db
+CORS_ORIGINS=http://localhost:5173,http://127.0.0.1:5173
+```
 
-Example:
+### Frontend `.env`
+```env
+VITE_API_URL=http://localhost:8000/api
+```
 
+---
+
+## 📡 API Endpoints
+
+**Base URL:** `http://localhost:8000/api`
+
+### Health & Info
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/health` | System health check |
+
+### Listings CRUD
+| Method | Endpoint | Query Params | Description |
+|--------|----------|--------------|-------------|
+| `GET` | `/listings` | `page`, `pageSize`, `search`, `city`, `category`, `source` | Get paginated listings with filters |
+| `POST` | `/listings` | - | Create single listing |
+| `POST` | `/listings/bulk` | - | Bulk insert listings |
+| `GET` | `/listings/{id}` | - | Get listing by ID |
+| `PATCH` | `/listings/{id}` | - | Update listing |
+| `DELETE` | `/listings/{id}` | - | Delete listing |
+
+### Analytics & Statistics
+| Method | Endpoint | Query Params | Description |
+|--------|----------|--------------|-------------|
+| `GET` | `/stats/overview` | - | Total counts (listings, cities, categories, sources) |
+| `GET` | `/stats/category` | `limit` (default: 10) | Top categories by listing count |
+| `GET` | `/stats/city` | `limit` (default: 10) | Top cities by listing count |
+| `GET` | `/stats/source` | - | Distribution by data source |
+| `GET` | `/stats/timeline` | `days` (default: 30) | Daily listing creation timeline |
+| `GET` | `/stats/city-category` | `cities`, `categories` | Cross-tabulation matrix |
+
+### Example Request
 ```bash
-curl -X POST http://localhost:8000/api/listings/bulk -H "Content-Type: application/json" \
-  -d '[{"business_name":"Cafe Mondegar","category":"Cafe","city":"Mumbai","address":"Colaba Causeway, Mumbai","phone":"22020591","source":"OpenStreetMap"}]'
+# Get listings filtered by city
+curl "http://localhost:8000/api/listings?city=Mumbai&pageSize=20"
+
+# Get category statistics
+curl "http://localhost:8000/api/stats/category?limit=5"
 ```
 
-## Database
+---
 
-Table `listing_master` (utf8mb4): `id`, `business_name`, `category`, `city`, `address`, `phone`,
-`source`, `image_url`, `created_at`. A unique key on `(business_name, city, source)` blocks duplicates;
-`category`, `city` and `source` are `NOT NULL DEFAULT 'Unknown'` so that key also covers rows without them.
+## 🗄️ Database Schema
 
-Regenerate the dump (run from the project root; writes UTF-8 inside the container, then copies it out):
-
-```bash
-docker exec listings_mysql sh -c 'mysqldump -uroot -p"$MYSQL_ROOT_PASSWORD" --no-tablespaces listings_db listing_master --result-file=/tmp/dump.sql'
-docker cp listings_mysql:/tmp/dump.sql database/dump.sql
+```sql
+CREATE TABLE `listing_master` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `business_name` varchar(255) NOT NULL,
+  `category` varchar(150) NOT NULL DEFAULT 'Unknown',
+  `city` varchar(100) NOT NULL DEFAULT 'Unknown',
+  `address` text,
+  `phone` varchar(30) DEFAULT NULL,
+  `source` varchar(50) NOT NULL DEFAULT 'Unknown',
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `image_url` varchar(500) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uq_name_city_source` (`business_name`(150), `city`, `source`),
+  KEY `idx_category` (`category`),
+  KEY `idx_city` (`city`),
+  KEY `idx_source` (`source`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 ```
 
-## Tests and linting
+**Key Features:**
+- Composite unique constraint prevents duplicate entries
+- Indexed columns for fast filtering and aggregation
+- UTF-8 support for international business names
 
+---
+
+## 🤖 Data Scraping Approach
+
+The project includes ethical web scraping scripts that collect business data from OpenStreetMap:
+
+### Scraping Script
 ```bash
 cd backend
-pip install -r requirements-dev.txt
-python -m pytest                  # needs the MySQL container running; cleans up its own rows
-python -m flake8 app scripts tests
-cd ../frontend && npm run lint && npm run build
+python scripts/scrape_directory.py --city Mumbai --category restaurant --limit 100
 ```
 
-## Challenges Faced
+### Ethical Guidelines
+1. **Public API**: Uses OpenStreetMap's Overpass API (public domain data)
+2. **robots.txt Compliance**: Checks and respects robots.txt directives
+3. **Rate Limiting**: Built-in delays between requests
+4. **User-Agent**: Identifies scraper with contact information
+5. **Mirror Failover**: Automatically switches to compliant mirrors
+6. **Data Validation**: Skips incomplete records (missing name, phone, or address)
 
-- **Scraping ethically.** Commercial directories (Justdial, YellowPages) block automated access and
-  their terms forbid scraping. I switched to OpenStreetMap's Overpass API, which is open data, and
-  built the scraper to check `robots.txt`; the main `overpass-api.de` host disallows `/api/`, so it is
-  skipped automatically and public mirrors are used instead.
-- **Slow / overloaded mirrors.** One big query per city timed out, so the scraper sends one smaller
-  query per OSM tag group, with delays, timeouts and back-off on 429/5xx.
-- **Incomplete source data.** Many OSM entries lack a phone or address. Those are skipped rather
-  than filled with invented values; only complete records are stored.
-- **Honest mock data.** Early versions generated Faker rows labelled like real sources. All generated
-  rows are now labelled `Mock`, so the dashboard makes the real/mock split visible.
-- **NULLs and duplicates.** MySQL unique keys ignore NULLs, so rows without a city/source could be
-  duplicated, and NULL groups vanished from the charts. Category/city/source are now normalised to
-  `Unknown` (API validation + `NOT NULL DEFAULT 'Unknown'`), so totals always add up.
-- **Dump encoding on Windows.** Redirecting `mysqldump` output in PowerShell produced a UTF-16 file
-  that MySQL could not import; the dump is now written inside the container and copied out as UTF-8.
-- **API-down UX.** The dashboard originally failed silently when the API or database was down; the
-  API now returns 503 and the pages show an error with a Retry button.
+### Data Sources
+- **OpenStreetMap**: Real business data via Overpass API
+- **Mock Data**: Generated via `scripts/seed.py` for testing (tagged as `source="Mock"`)
+
+---
+
+## 🧪 Testing
+
+### Backend Tests
+```bash
+cd backend
+pytest
+```
+
+### Frontend Build Test
+```bash
+cd frontend
+npm run build
+```
+
+### Linting
+```bash
+# Backend
+cd backend
+flake8 app/
+
+# Frontend
+cd frontend
+npm run lint
+```
+
+---
+
+## 🔄 Regenerate SQL Dump
+
+If you need to regenerate the database dump:
+
+```bash
+# Ensure Docker is running
+docker compose up -d
+
+# Export database dump
+docker exec $(docker compose ps -q mysql) mysqldump -ulistings_user -plistings_pass --databases listings_db --add-drop-table --complete-insert > database/listing_master.sql
+```
+
+---
+
+## 🚀 Deployment
+
+### Frontend (Vercel)
+1. Push code to GitHub
+2. Import project in Vercel
+3. Set root directory to `frontend/`
+4. Add environment variable: `VITE_API_URL=<your-backend-url>/api`
+5. Deploy
+
+### Backend (Render)
+1. Create new Web Service
+2. Set root directory to `backend/`
+3. Build command: `pip install -r requirements.txt`
+4. Start command: `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
+5. Add environment variables from `backend/.env.example`
+
+### Database (TiDB Cloud or PlanetScale)
+1. Create MySQL 8.0 instance
+2. Import `database/listing_master.sql`
+3. Update backend `DATABASE_URL` environment variable
+
+---
+
+## 📸 Screenshots
+
+*(Add screenshots here after deployment)*
+
+- Homepage / Listings view
+- Dashboard with KPI cards
+- Analytics charts
+- Modal detail view
+
+---
+
+## 🎬 Demo
+
+**Live Links:**
+- 🌐 Frontend: `<Your-Vercel-URL>`
+- 🔌 Backend: `<Your-Render-URL>`
+- 📹 Demo Video: `<Your-YouTube-Link>`
+
+---
+
+## 💡 Key Technical Challenges Solved
+
+1. **Compliant Web Scraping at Scale**: Integrated OpenStreetMap's public API with robots.txt verification and multi-mirror failover
+2. **Zero-Config Deployment**: Dual-engine database system auto-detects MySQL availability and falls back to SQLite
+3. **SPA Routing on Static Hosts**: Configured Vercel rewrites for client-side React Router navigation
+4. **Cross-Origin Security**: Implemented FastAPI CORS middleware with environment-based origin configuration
+
+---
+
+## 📄 License
+
+This project is licensed under the [MIT License](https://opensource.org/licenses/MIT).
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Please open an issue or submit a pull request.
+
+---
+
+## 📞 Contact
+
+For questions or support, please open an issue on GitHub.

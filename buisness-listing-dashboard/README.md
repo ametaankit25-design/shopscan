@@ -4,22 +4,45 @@
 [![Vite](https://img.shields.io/badge/Vite-8.3-646CFF?logo=vite&logoColor=white)](https://vitejs.dev/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.111-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
 [![Python](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)](https://www.python.org/)
-[![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1?logo=mysql&logoColor=white)](https://www.mysql.com/)
+[![TiDB Cloud](https://img.shields.io/badge/TiDB-Cloud-FF5F2D?logo=data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDJMMiA3VjE3TDEyIDIyTDIyIDE3VjdMMTIgMloiIGZpbGw9IiNGRjVGMkQiLz4KPC9zdmc+Cg==&logoColor=white)](https://www.pingcap.com/tidb-cloud/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-A full-stack business directory and analytics platform that collects real business listings from OpenStreetMap, stores them in MySQL/SQLite, and visualizes market data through an interactive React dashboard.
+A full-stack business directory and analytics platform with **885 real business listings** from OpenStreetMap, powered by TiDB Cloud, FastAPI, and React.
+
+## 🚀 Live Demo
+
+- **Backend API**: [https://shopscan-dbt1.onrender.com](https://shopscan-dbt1.onrender.com/api/stats/overview)
+- **Frontend**: _(Deploy your frontend and add URL here)_
+- **Database**: TiDB Cloud (885 listings across 10 cities)
 
 ---
 
 ## 🌟 Key Features
 
-- **🗺️ Interactive Business Directory**: Browse verified restaurants, cafes, hotels, pharmacies, and retail stores
+- **🗺️ Interactive Business Directory**: Browse 885 verified restaurants, cafes, hotels, pharmacies, schools, and more
 - **🔍 Advanced Search & Filtering**: Filter by keyword, city, category, and data source in real-time
 - **📊 Analytics Dashboard**: Real-time KPIs, category rankings, city distribution charts, and market insights
 - **📈 Multi-dimensional Analytics**: Stacked charts, 30-day timeline trends, and cross-tabulation views
-- **⚡ Resilient Database Architecture**: MySQL with automatic SQLite fallback for 100% uptime
+- **☁️ Production-Ready**: Deployed on Render + TiDB Cloud with 885 active listings
 - **🤖 Ethical Web Scraping**: OpenStreetMap Overpass API with robots.txt compliance and rate limiting
-- **☁️ Cloud-Ready**: Pre-configured for Vercel (frontend), Render (backend), and TiDB Cloud (MySQL)
+- **⚡ Database Flexibility**: TiDB Cloud (production) + Docker MySQL (development) + SQLite (fallback)
+
+---
+
+## 📊 Dataset Overview
+
+**Total Listings:** 885
+
+**Cities (Top 5):**
+- Delhi: 240 listings
+- Bangalore: 193 listings  
+- Mumbai: 184 listings
+- Chennai: 77 listings
+- Kolkata: 75 listings
+
+**Categories (Top 10):**
+- Restaurant: 204 | Hotel: 148 | Hospital: 65 | Clothing: 64 | School: 53
+- Cafe: 50 | Clinic: 46 | Pharmacy: 44 | Gym: 31 | Bank: 24
 
 ---
 

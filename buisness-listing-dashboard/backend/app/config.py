@@ -25,7 +25,7 @@ class Settings(BaseSettings):
 
     DATABASE_URL: str | None = None
     DB_USER: str = "listings_user"
-    DB_PASSWORD: str  # Required - no default for security
+    DB_PASSWORD: str | None = None  # Optional when DATABASE_URL is provided
     DB_HOST: str = "localhost"
     DB_PORT: int = 3306
     DB_NAME: str = "listings_db"
@@ -40,6 +40,8 @@ class Settings(BaseSettings):
             if url.startswith("mysql://"):
                 url = url.replace("mysql://", "mysql+pymysql://", 1)
             return url
+        if not self.DB_PASSWORD:
+            raise ValueError("DB_PASSWORD is required when DATABASE_URL is not provided")
         pw = quote_plus(self.DB_PASSWORD)
         return (
             f"mysql+pymysql://{self.DB_USER}:{pw}"
